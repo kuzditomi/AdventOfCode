@@ -1,0 +1,95 @@
+<textarea id="input">Faerun to Norrath = 129
+Faerun to Tristram = 58
+Faerun to AlphaCentauri = 13
+Faerun to Arbre = 24
+Faerun to Snowdin = 60
+Faerun to Tambi = 71
+Faerun to Straylight = 67
+Norrath to Tristram = 142
+Norrath to AlphaCentauri = 15
+Norrath to Arbre = 135
+Norrath to Snowdin = 75
+Norrath to Tambi = 82
+Norrath to Straylight = 54
+Tristram to AlphaCentauri = 118
+Tristram to Arbre = 122
+Tristram to Snowdin = 103
+Tristram to Tambi = 49
+Tristram to Straylight = 97
+AlphaCentauri to Arbre = 116
+AlphaCentauri to Snowdin = 12
+AlphaCentauri to Tambi = 18
+AlphaCentauri to Straylight = 91
+Arbre to Snowdin = 129
+Arbre to Tambi = 53
+Arbre to Straylight = 40
+Snowdin to Tambi = 15
+Snowdin to Straylight = 99
+Tambi to Straylight = 70</textarea>
+
+<script>
+var nodes = [];
+var graph = document.getElementById('input').value
+				.split('\n')
+				.map(function(line){
+					var parts = line.split(' ');
+					
+					if(nodes.indexOf(parts[0]) == -1)
+						nodes.push(parts[0]);
+					if(nodes.indexOf(parts[2]) == -1)
+						nodes.push(parts[2]);
+					
+					return [
+						{
+							name: parts[0] + ',' + parts[2],
+							distance: parseInt(parts[4])
+						},
+						{
+							name: parts[2] + ',' + parts[0],
+							distance: parseInt(parts[4])
+						}
+					];
+					
+				})
+				.reduce(function(a,b){
+					a[b[0].name] = b[0].distance; 
+					a[b[1].name] = b[1].distance; 
+					
+					return a;
+				}, {});
+//dfs
+var visited = [],
+	min;
+
+for(var i = 0; i < nodes.length; i++){
+	var children = nodes.filter(function(n){ return n != nodes[i];});
+	for(var j = 0; j < children.length;j++){
+		visited.push(nodes[i]);
+		visit(children[j]);
+		visited.pop();
+	}
+}
+function visit(node){
+	if(visited.length == nodes.length-1){
+		visited.push(node);
+		var path = 0;
+		for(var i = 1; i < visited.length;i++){
+			path += graph[visited[i-1] + ',' + visited[i]];
+		}
+		if(min == undefined || path < min)
+			min = path;
+		
+		visited.pop();
+		return;
+	}
+	
+	var children = nodes.filter(function(n){ return visited.indexOf(n) == -1 && n != node});
+	for(var i = 0; i < children.length;i++){
+		visited.push(node);
+		visit(children[i]);
+		visited.pop();
+	}
+}
+
+console.log(min);
+</script>
