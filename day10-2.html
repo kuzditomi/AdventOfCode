@@ -1,0 +1,25 @@
+<script>
+var input = '3113322113',
+	output = '3113322113',
+	sequence;
+	
+for(var j = 0; j < 50; j++){
+	input = output;
+	output = '';
+	sequence = 1;
+	
+	for(var i = 1; i <= input.length; i++) { // <= causes the last character to be evaluated too
+		var prev = input[i-1];
+		var current = input[i];
+		
+		if(current == prev){
+			sequence++;
+		} else {
+			output += sequence + prev;
+			sequence = 1;
+		}
+	}
+}
+
+console.log(output.length);
+</script>
