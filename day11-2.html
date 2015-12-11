@@ -1,12 +1,12 @@
 <script>
-var password = 'vzbxkghb';
+var password = 'vzbxkghb'.split('');
 
 function incrementPassword(){
 	for(var i = password.length-1; i >= 0; i--){
 		if(password[i] == 'z'){
-			password = password.substr(0, i) + 'a' + password.substr(i+1);
+			password[i] = 'a';
 		} else {
-			password = password.substr(0, i) + String.fromCharCode(password.charCodeAt(i) + 1) + password.substr(i+1);
+			password[i] = String.fromCharCode(password[i].charCodeAt(0) + 1);
 			return;
 		}
 	}
@@ -49,5 +49,5 @@ for(var i = 0; i < 2; i++){
 	while(!isPasswordAllowed());
 }
 
-console.log(password);
+console.log(password.join(''));
 </script>
