@@ -1,0 +1,53 @@
+<script>
+var password = 'vzbxkghb';
+
+function incrementPassword(){
+	for(var i = password.length-1; i >= 0; i--){
+		if(password[i] == 'z'){
+			password = password.substr(0, i) + 'a' + password.substr(i+1);
+		} else {
+			password = password.substr(0, i) + String.fromCharCode(password.charCodeAt(i) + 1) + password.substr(i+1);
+			return;
+		}
+	}
+}
+
+function isPasswordAllowed(){
+	var doubles = [],
+		sequence = [],
+		prev = '';
+	
+	for(var i = 0; i < password.length; i++){
+		var character = password[i];
+		
+		if(['iol'].indexOf(character) > -1)
+			return false;
+			
+		if(character == prev && doubles.indexOf(i-1) == -1){
+			doubles.push(i);
+		}
+		
+		if(sequence !== true){
+			sequence.push(character);
+			
+			if(sequence.length == 3){
+				if(sequence[0].charCodeAt(0) == (sequence[1].charCodeAt(0)-1) && (sequence[1].charCodeAt(0)-1) == (sequence[2].charCodeAt(0)-2))
+					sequence = true;
+				else
+					sequence.shift();
+			}				
+		}
+		
+		prev = character;
+	}
+	
+	return doubles.length >= 2 && sequence === true;
+}
+
+for(var i = 0; i < 2; i++){
+	do incrementPassword();
+	while(!isPasswordAllowed());
+}
+
+console.log(password);
+</script>
