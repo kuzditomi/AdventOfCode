@@ -1,0 +1,68 @@
+<textarea id="input">Vixen can fly 19 km/s for 7 seconds, but then must rest for 124 seconds.
+Rudolph can fly 3 km/s for 15 seconds, but then must rest for 28 seconds.
+Donner can fly 19 km/s for 9 seconds, but then must rest for 164 seconds.
+Blitzen can fly 19 km/s for 9 seconds, but then must rest for 158 seconds.
+Comet can fly 13 km/s for 7 seconds, but then must rest for 82 seconds.
+Cupid can fly 25 km/s for 6 seconds, but then must rest for 145 seconds.
+Dasher can fly 14 km/s for 3 seconds, but then must rest for 38 seconds.
+Dancer can fly 3 km/s for 16 seconds, but then must rest for 37 seconds.
+Prancer can fly 25 km/s for 6 seconds, but then must rest for 143 seconds.</textarea>
+
+<script>
+var limit = 2503,
+	reindeerData = document.getElementById('input').value
+		.split('\n')
+		.map(function(line){
+			var parts = line.split(' '),
+				name = parts[0],
+				speed = parseInt(parts[3]),
+				duration = parseInt(parts[6]),
+				rest = parseInt(parts[13]);
+			
+			return {
+				name: name,
+				speed: speed,
+				duration: duration,
+				rest: rest,
+				distance: 0,
+				flying: duration,
+				resting: 0,
+				points: 0
+			}
+		}).reduce(function(a,b){
+			a[b.name] = b;
+			
+			return a;
+		}, {});
+		
+for(var i = 0; i < limit; i++){
+	var max = 0;
+	
+	for(var reindeerKey in reindeerData)
+		if(reindeerData.hasOwnProperty(reindeerKey)){
+			var reindeer = reindeerData[reindeerKey];
+			if(reindeer.flying > 0){
+				reindeer.distance += reindeer.speed;
+				reindeer.flying --;
+				if(reindeer.flying == 0)
+					reindeer.resting = reindeer.rest;
+			} else {
+				reindeer.resting --;
+				if(reindeer.resting == 0)
+					reindeer.flying = reindeer.duration;
+			}
+			
+			max = Math.max(reindeer.distance, max);
+		}
+		
+	for(var reindeerKey in reindeerData)
+		if(reindeerData.hasOwnProperty(reindeerKey) && reindeerData[reindeerKey].distance == max)
+			reindeerData[reindeerKey].points++;
+}
+
+var winner = Object.keys(reindeerData)
+	.map(function(r){return reindeerData[r].points})
+	.reduce(function(a,b){ return Math.max(a,b);}, 0);
+	
+console.log(winner);
+</script>

@@ -1,0 +1,53 @@
+<textarea id="input">Vixen can fly 19 km/s for 7 seconds, but then must rest for 124 seconds.
+Rudolph can fly 3 km/s for 15 seconds, but then must rest for 28 seconds.
+Donner can fly 19 km/s for 9 seconds, but then must rest for 164 seconds.
+Blitzen can fly 19 km/s for 9 seconds, but then must rest for 158 seconds.
+Comet can fly 13 km/s for 7 seconds, but then must rest for 82 seconds.
+Cupid can fly 25 km/s for 6 seconds, but then must rest for 145 seconds.
+Dasher can fly 14 km/s for 3 seconds, but then must rest for 38 seconds.
+Dancer can fly 3 km/s for 16 seconds, but then must rest for 37 seconds.
+Prancer can fly 25 km/s for 6 seconds, but then must rest for 143 seconds.</textarea>
+
+<script>
+var limit = 2503,
+	leader = document.getElementById('input').value
+		.split('\n')
+		.map(function(line){
+			var parts = line.split(' '),
+				name = parts[0],
+				speed = parseInt(parts[3]),
+				duration = parseInt(parts[6]),
+				rest = parseInt(parts[13]),
+				isFlying = true,
+				time = 0,
+				distance = 0;
+				
+			while(time < limit){
+				if(isFlying){
+					isFlying = false;
+					if(time + duration > limit)
+						distance += (limit-time)*speed;
+					else 
+						distance += duration*speed;
+						
+					time += duration;
+				} else {
+					time += rest;
+					isFlying = true;
+				}
+			}
+			
+			return {
+				name: name,
+				distance: distance
+			}
+		}).reduce(function(a,b){
+			if(!a){
+				return b;
+			}
+			
+			return a.distance > b.distance ? a : b;
+		})
+		
+console.log(leader.name, leader.distance);
+</script>
