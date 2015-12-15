@@ -1,0 +1,72 @@
+<textarea id="input">Sugar: capacity 3, durability 0, flavor 0, texture -3, calories 2
+Sprinkles: capacity -3, durability 3, flavor 0, texture 0, calories 9
+Candy: capacity -1, durability 0, flavor 4, texture 0, calories 1
+Chocolate: capacity 0, durability 0, flavor -2, texture 2, calories 8</textarea>
+
+<script>
+var input = document.getElementById('input').value.split('\n'),
+	limit = 100,
+	ingredients = input.map(function(line){
+		var parts = line.split(' ');
+		
+		return {
+			name: parts[0].substr(0, parts[0].length-1),
+			capacity: parseInt(parts[2].substr(0,parts[2].length-1)),
+			durability: parseInt(parts[4].substr(0,parts[4].length-1)),
+			flavor: parseInt(parts[6].substr(0,parts[6].length-1)),
+			texture: parseInt(parts[8].substr(0,parts[8].length-1)),
+			calories: parseInt(parts[10])
+		}
+	}).reduce(function(a,b){ 
+		a[b.name] = b; 
+		return a; 
+	}, {}),
+	ingredientNames = Object.keys(ingredients),
+	properties = ['capacity','durability','flavor','texture'],
+	visited = [];
+	best = 0;
+	
+populate(0,0);
+
+function populate(ingredientLevel, quantity){
+	if(visited.length == ingredientNames.length){
+		if(quantity == limit){
+			var score = calculateScore();
+			best = Math.max(score, best);
+		}
+		return;
+	}
+	
+	for(var i = 1; i <= limit - quantity; i++){
+		visited.push({
+			name: ingredientNames[ingredientLevel],
+			quantity: i
+		});
+		
+		populate(ingredientLevel + 1, quantity + i);
+		
+		visited.pop();
+	}
+	
+}
+
+function calculateScore(cookie){
+	var scoremap = visited.map(function(ingredient){
+		return properties.map(function(property){
+			return ingredients[ingredient.name][property] * ingredient.quantity;
+		})
+	}).reduce(function(a,b){
+		return properties.map(function(p,i){
+			return a[i] + b[i];
+		});
+	},properties.map(function(){return 0;}));
+	
+	var score = scoremap.reduce(function(a,b){
+		return a * (b < 1 ? 0 : b);
+	}, 1)
+	
+	return score;
+}
+
+console.log(best);
+</script>
