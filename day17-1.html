@@ -1,0 +1,50 @@
+<textarea id="input">33
+14
+18
+20
+45
+35
+16
+35
+1
+13
+18
+13
+50
+44
+48
+6
+24
+41
+30
+42</textarea>
+
+<script>
+var input = document.getElementById('input').value,
+	numbers = input.split('\n')
+		.map(function(n){return parseInt(n);})
+		.sort(function(a,b){ return a-b;}),
+	possibleVariations = 0;
+	
+checkVariationsFromIndex(0,0);
+	
+function checkVariationsFromIndex(numbersIndex, sum){
+	if(sum == 150){
+		possibleVariations++;
+		return;
+	}
+	
+	if(sum > 150)
+		return;
+		
+	if(numbersIndex == numbers.length)
+		return;
+	
+	var number = numbers[numbersIndex];
+	
+	checkVariationsFromIndex(numbersIndex+1, sum);
+	checkVariationsFromIndex(numbersIndex+1, sum+number);
+}
+	
+console.log(possibleVariations);
+</script>
