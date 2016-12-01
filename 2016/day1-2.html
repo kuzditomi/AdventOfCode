@@ -1,0 +1,37 @@
+<script>
+var input = "R4, R1, L2, R1, L1, L1, R1, L5, R1, R5, L2, R3, L3, L4, R4, R4, R3, L5, L1, R5, R3, L4, R1, R5, L1, R3, L2, R3, R1, L4, L1, R1, L1, L5, R1, L2, R2, L3, L5, R1, R5, L1, R188, L3, R2, R52, R5, L3, R79, L1, R5, R186, R2, R1, L3, L5, L2, R2, R4, R5, R5, L5, L4, R5, R3, L4, R4, L4, L4, R5, L4, L3, L1, L4, R1, R2, L5, R3, L4, R3, L3, L5, R1, R1, L3, R2, R1, R2, R2, L4, R5, R1, R3, R2, L2, L2, L1, R2, L1, L3, R5, R1, R4, R5, R2, R2, R4, R4, R1, L3, R4, L2, R2, R1, R3, L5, R5, R2, R5, L1, R2, R4, L1, R5, L3, L3, R1, L4, R2, L2, R1, L1, R4, R3, L2, L3, R3, L2, R1, L4, R5, L1, R5, L2, L1, L5, L2, L5, L2, L4, L2, R3";
+var visited = [];
+var firstFind = null;
+
+var bunnyAt = input.split(', ').reduce(function(location, order){
+	if(firstFind)
+		return;
+		
+	location.direction += order[0] == 'R' ? 1 : -1;
+	if(location.direction < 0)
+		location.direction = 3;
+	
+	if(location.direction > 3)
+		location.direction = 0;
+		
+	var distance = parseInt(order.substring(1));
+	for(var i = 0; i < distance; i++){
+		visited.push({x: location.horizontal, y: location.vertical});
+		location.horizontal = location.direction % 2 == 0 ? location.horizontal : (location.horizontal + (location.direction == 1 ? 1 : -1));
+		location.vertical = location.direction % 2 == 1 ? location.vertical : (location.vertical + (location.direction == 0 ? 1 : -1));
+		
+		if(visited.filter(function(v){return v.x == location.horizontal && v.y == location.vertical}).length > 0){
+			firstFind = {x : location.horizontal, y: location.vertical};
+			return;
+		}
+	}
+	
+	return location;
+},{
+	direction: 0, // 'n','e','w','s'
+	vertical: 0,
+	horizontal: 0
+});
+	
+console.log(Math.abs(firstFind.x) + Math.abs(firstFind.y));
+</script>
