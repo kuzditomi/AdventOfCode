@@ -12,18 +12,23 @@ const (
 	down  = 3
 )
 
+// try to guess the size of matrix
 var matrix [][]int
+var matrixSize = 12
 
+func getCell(x, y int) int {
+	if x < 0 || x >= matrixSize || y < 0 || y >= matrixSize {
+		return 0
+	}
+
+	return matrix[x][y]
+}
 func calcCell(x, y int) int {
-	//	fmt.Printf("calt: %d %d\n", x, y)
-	return matrix[x-1][y-1] + matrix[x][y-1] + matrix[x+1][y-1] + matrix[x-1][y] + matrix[x+1][y] + matrix[x-1][y+1] + matrix[x][y+1] + matrix[x+1][y+1]
+	return getCell(x-1, y-1) + getCell(x, y-1) + getCell(x+1, y-1) + getCell(x-1, y) + getCell(x+1, y) + getCell(x-1, y+1) + getCell(x, y+1) + getCell(x+1, y+1)
 }
 
 func main() {
-	input := 23
-
-	// try to guess the size of matrix
-	matrixSize := 14
+	input := 368078
 
 	// initialize the matrix
 	matrix = make([][]int, matrixSize)
@@ -38,17 +43,16 @@ func main() {
 	x := int(math.Ceil((float64(matrixSize) / 2))) - 1
 	y := x
 	matrix[x][y] = 1
-	matrix[x+1][y] = 1
-	fmt.Printf("[%d][%d] = %d\n", x, y, 1)
-	fmt.Printf("[%d][%d] = %d\n", x+1, y, 1)
 
-	x++
-
-	dir := up
-	cycleLength := 1
+	dir := right
+	cycleLength := 0
 
 	// do the calculations
 	for {
+		if dir == right {
+			cycleLength++
+		}
+
 		for i := 0; i < cycleLength; i++ {
 			// move
 			switch dir {
@@ -56,19 +60,18 @@ func main() {
 				x++
 				break
 			case up:
-				y--
+				y++
 				break
 			case left:
 				x--
 				break
 			case down:
-				y++
+				y--
 				break
 			}
 
 			result := calcCell(x, y)
-			fmt.Printf("[%d][%d] = %d\n", x, y, result)
-			matrix[y][x] = result
+			matrix[x][y] = result
 
 			if result > input {
 				fmt.Println(result)
@@ -76,7 +79,10 @@ func main() {
 			}
 		}
 
-		cycleLength += 2
+		if dir == up {
+			cycleLength++
+		}
+
 		dir = (dir + 1) % 4
 	}
 }
