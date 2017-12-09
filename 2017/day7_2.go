@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 )
@@ -1437,50 +1438,51 @@ gyxo (61)
 cntj (57)`
 
 type program struct {
-	name     string
-	parent   *program
-	weight   int
-	children [](*program)
+	name        string
+	parent      *program
+	weight      int
+	children    [](*program)
+	totalWeight int
 }
 
-func calcWeight(prog *program) int {
-	if len(prog.children) == 0 {
-		return prog.weight
+var programMap = make(map[string]*program)
+
+func findMismatch(p *program) (d, val int) {
+	weightsMap := make(map[int]int)
+
+	for _, child := range p.children {
+		weightsMap[child.totalWeight]++
 	}
 
-	sum := 0
-	for _, child := range prog.children {
-		sum += child.weight
-	}
-
-	return prog.weight + sum
-}
-
-func findWrongWeight(prog *program) bool {
-	if len(prog.children) == 0 {
-		return false
-	}
-
-	//for _, child := range prog.children {
-	// todo find with calcWeight
-	//}
-
-	// recursion
-	for _, child := range prog.children {
-		found := findWrongWeight(child)
-		if found {
-			return true
+	mismatchedWeight := 0
+	for weight, count := range weightsMap {
+		if count > 1 {
+			mismatchedWeight = weight
 		}
 	}
 
-	return false
+	for weight, count := range weightsMap {
+		if count == 1 {
+			for _, child := range p.children {
+				if child.totalWeight == weight {
+					diff := mismatchedWeight - child.totalWeight
+
+					sub, w := findMismatch(child)
+					if sub == 0 {
+						return diff, child.weight
+					}
+
+					return sub, w
+				}
+			}
+		}
+	}
+
+	return 0, p.weight
 }
 
-func main() {
-	rows := strings.Split(puzzle2, "\n")
-	programMap := make(map[string]*program)
+func buildTree(rows []string) string {
 	name := ""
-
 	for _, row := range rows {
 		parts := strings.Split(row, " -> ")
 		left := parts[0]
@@ -1516,11 +1518,34 @@ func main() {
 		}
 	}
 
+	return name
+}
+
+func setTotalWeights(prog *program) {
+	prog.totalWeight = prog.weight
+
+	if len(prog.children) == 0 {
+		return
+	}
+
+	for _, child := range prog.children {
+		setTotalWeights(child)
+		prog.totalWeight += child.totalWeight
+	}
+}
+
+func main() {
+	rows := strings.Split(puzzle, "\n")
+
+	randomName := buildTree(rows)
+
 	// DFS find root
-	root := programMap[name]
+	root := programMap[randomName]
 	for ; root.parent != nil; root = root.parent {
 	}
 
-	// find wrong weight
-	findWrongWeight(root)
+	setTotalWeights(root)
+
+	diff, value := findMismatch(root)
+	fmt.Println(diff + value)
 }
