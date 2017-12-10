@@ -4,8 +4,7 @@ import (
 	"fmt"
 )
 
-var puzzle2 = "230,1,2,221,97,252,168,169,57,99,0,254,181,255,235,167"
-var puzzle = ""
+var puzzle = "230,1,2,221,97,252,168,169,57,99,0,254,181,255,235,167"
 
 func reverse(slice []int) {
 	last := len(slice) - 1
@@ -52,14 +51,13 @@ func main() {
 	dense := make([]int, 16)
 	currentSparse := 0
 	for i := 0; i < 16; i++ {
-		dense[i] = sparse[currentSparse]
-		for j := 1; j < 16; j++ {
-			dense[i] ^= sparse[j+currentSparse]
+		for j := 0; j < 16; j++ {
+			dense[i] ^= sparse[currentSparse]
 			currentSparse++
 		}
 	}
 
 	for _, number := range dense {
-		fmt.Printf("%01x", number)
+		fmt.Printf("%.02x", number)
 	}
 }
