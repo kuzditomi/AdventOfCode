@@ -1,0 +1,20 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "noImplicitAny": true,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "sourceMap": true,
+        "outDir": "dist",
+        "lib": [
+            "dom",
+            "es2017"
+        ]
+    },
+    "include": [
+        "day*.ts"
+    ],
+    "exclude": [
+        "node_modules",
+    ]
+}
