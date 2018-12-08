@@ -6,7 +6,7 @@
             "request": "launch",
             "name": "Debug TypeScript in Node.js",
             "preLaunchTask": "typescript",
-            "program": "${workspaceFolder}/day-6-1.ts",
+            "program": "${workspaceFolder}/day-7-2.ts",
             "cwd": "${workspaceFolder}",
             "protocol": "inspector",
             "outFiles": [
