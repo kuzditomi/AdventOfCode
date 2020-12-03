@@ -1,6 +1,4 @@
-const input = require('./day3.input.json');
-
-const map = input.map(row => row.split(''));
+const map = require('./day3.input.json');
 
 let treeCount = 0;
 let x = 0;

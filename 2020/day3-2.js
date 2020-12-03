@@ -1,6 +1,4 @@
-const input = require('./day3.input.json');
-
-const map = input.map(row => row.split(''));
+const map = require('./day3.input.json');
 
 const xPositions = [0, 0, 0, 0, 0];
 const triesForX = [1, 3, 5, 7, 1];
